@@ -1,0 +1,14 @@
+<template>
+    <lightning-card  variant="Narrow"  title="Child Cases Hierarchy" icon-name="standard:case">
+    <div class="slds-m-around_small">
+        <lightning-tree-grid
+            columns={gridColumns}
+            data={gridData}
+            hide-checkbox-column="true"
+            is-loading={isLoading}
+            key-field="Id"
+            ontoggle={handleOnToggle}
+        ></lightning-tree-grid>
+    </div>
+    </lightning-card>
+</template>
