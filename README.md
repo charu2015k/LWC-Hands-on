@@ -1,4 +1,4 @@
-## Child Case Hierarchy on Case Record Page
+## Child Cases Hierarchy on Case Record Page
 
 ![image](https://user-images.githubusercontent.com/45118824/218364106-8752eceb-48dd-4a2b-b30f-7efbf4cfd5f5.png)
 
