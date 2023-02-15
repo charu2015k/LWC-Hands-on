@@ -1,3 +1,12 @@
+## Child Cases Hierarchy on Case Record Page
+
+![image](https://user-images.githubusercontent.com/45118824/218364106-8752eceb-48dd-4a2b-b30f-7efbf4cfd5f5.png)
+
+![image](https://user-images.githubusercontent.com/45118824/218364549-a2a373f6-a22b-48ff-ba81-f08ee2718a1d.png)
+
+
+
+
 # Salesforce DX Project: Next Steps
 
 Now that you’ve created a Salesforce DX project, what’s next? Here are some documentation resources to get you started.
