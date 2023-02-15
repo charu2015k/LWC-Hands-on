@@ -23,14 +23,20 @@ public class ChildCasesHierarchyControllerTest
         insert case6;
     }
 
+    //This method tests getChildCases method of ChildCasesHierarchyController class
     @isTest
     public static void callGetChildCases() 
     {
             Case c1 = [SELECT Id, CaseNumber, Subject, Origin, ParentId
                         FROM Case
                         WHERE Subject = 'Test Subject1' LIMIT 1];
+
+            Case c3 = [SELECT Id, CaseNumber, Subject, Origin, ParentId
+                       FROM Case
+                       WHERE Subject = 'Test Subject3' LIMIT 1];
             
             List<Case> childOfc1 = ChildCasesHierarchyController.getChildCases(c1.Id);
+            List<Case> childOfc3 = ChildCasesHierarchyController.getChildCases(c3.Id);
 
             Test.startTest();
             System.assertEquals( 2, childOfc1.size() );
@@ -38,6 +44,7 @@ public class ChildCasesHierarchyControllerTest
             System.assertNotEquals(null, childOfc1[0].CaseNumber);
             System.assertNotEquals(null, childOfc1[0].Subject);
             System.assertNotEquals(null, childOfc1[0].Origin);
+            System.assertEquals( 0, childOfc3.size() );
             Test.stopTest();
     }
 }

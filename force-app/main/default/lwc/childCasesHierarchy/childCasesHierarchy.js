@@ -1,4 +1,4 @@
-import { LightningElement, wire, api } from 'lwc';
+import { LightningElement, wire, api, track } from 'lwc';
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 
 import CASE_NUMBER from "@salesforce/schema/Case.CaseNumber";
@@ -7,28 +7,32 @@ import ORIGIN from "@salesforce/schema/Case.Origin";
 
 import getChildCases from "@salesforce/apex/ChildCasesHierarchyController.getChildCases";
 
+// definition of columns for the tree grid
 const COLS = [
 	{ fieldName: "recordUrl", label: "Case Number", type: "url",
-	  typeAttributes: { label: { fieldName : 'CaseNumber'}, target: '_blank' }},
-	{ fieldName: "Subject", label: "Subject"},
-	{ fieldName: "Origin", label: "Origin" }
+	  typeAttributes: { label: { fieldName : CASE_NUMBER.fieldApiName}, target: '_blank' }},
+	{ fieldName: SUBJECT.fieldApiName, label: "Subject"},
+	{ fieldName: ORIGIN.fieldApiName, label: "Origin" }
 ];
 
 export default class ChildCasesHierarchy extends LightningElement
 {
-    gridColumns = COLS;
+    @track gridColumns = COLS;
 	isLoading = true;
-	gridData = [];
+	@track gridData = [];
 	
     @api recordId;
 
+	// initial data provided to the tree grid i.e. All first level child Cases
 	@wire(getChildCases, { parentId: '$recordId' })
 	firstLevelChildCases({ error, data }) {
         if (error) {
 			console.error("error loading Cases", error);
 		} else if (data) {	
+			console.log('**Data for L1**'+data);
 			let recordUrl;
             this.gridData = data.map(child => {
+				//Forming value of recordUrl field which is introduced to track the URL of clicked CaseNumber in first column
 				recordUrl = `/${child.Id}`;
 				return {
 				recordUrl,	
@@ -39,13 +43,15 @@ export default class ChildCasesHierarchy extends LightningElement
 		}
 	} 
 
+	// when a row is toggled we retrieve values and dynamically load children if needed
 	handleOnToggle(event) {
-		console.log(event.detail.name);
-		console.log(event.detail.hasChildrenContent);
-		console.log(event.detail.isExpanded);
+		// retrieve the unique ID of the row being expanded
 		const rowName = event.detail.name;
+
 		if (!event.detail.hasChildrenContent && event.detail.isExpanded) {
 			this.isLoading = true;
+
+			//Calling Apex controller method imperatively to fetch further child Cases
 			getChildCases({ parentId: rowName })
 				.then((result) => {
 					console.log(result);
@@ -54,6 +60,7 @@ export default class ChildCasesHierarchy extends LightningElement
 						let recordUrl;
 						console.log('***recordUrl**'+recordUrl);
 						const newChildren = result.map(child => {
+							//Forming value of recordUrl field which is introduced to track the URL of clicked CaseNumber in first column
 							recordUrl = `/${child.Id}`;
 							console.log('***recordUrl**'+recordUrl);
 							return {
@@ -92,19 +99,22 @@ export default class ChildCasesHierarchy extends LightningElement
 		}
 	}
 
+	// add the new child rows at the desired location
 	getNewDataWithChildren(rowName, data, children) {
 		return data.map((row) => {
 			let hasChildrenContent = false;
 			if (
-				Object.prototype.hasOwnProperty.call(row, "_children") &&
+				row.hasOwnProperty('_children') &&
 				Array.isArray(row._children) &&
 				row._children.length > 0
 			) {
 				hasChildrenContent = true;
 			}
 
+			// if this is the row that was toggled then add the child content
 			if (row.Id === rowName) {
 				row._children = children;
+				// otherwise keep searching for the correct row by recursively searching the tree
 			} else if (hasChildrenContent) {
 				this.getNewDataWithChildren(rowName, row._children, children);
 			}
