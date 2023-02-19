@@ -1,5 +1,9 @@
 ## Child Cases Hierarchy on Case Record Page
 
+The childCasesHierarchy LWC Component displays the child Cases in a  hierarchical tree format, when added to the Case Lightning Record Page.
+When the Page is loaded, it displays first level of child Cases. Further children of each child can be displayed on demand by clicking the arrow beside the concerned Case.
+The Component uses custom Apex Controller to fetch Case data dynamically from Salesforce database.
+
 ![image](https://user-images.githubusercontent.com/45118824/218364106-8752eceb-48dd-4a2b-b30f-7efbf4cfd5f5.png)
 
 ![image](https://user-images.githubusercontent.com/45118824/218364549-a2a373f6-a22b-48ff-ba81-f08ee2718a1d.png)
